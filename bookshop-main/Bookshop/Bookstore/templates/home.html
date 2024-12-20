@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-30">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <h1 class="text-center mb-4">Welcome to My Bookstore</h1>
+                    <div class="container p-4 shadow-sm mb-5 mt-5" id="search">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search for a product...">
+                    </div>
+                    <div class="row" id="productList">
+                        {% for product in products %}
+                        <div class="col-md-6 mb-4 product-card">
+                            <a href="{% url 'product_detail' product.id %}" class="card-link">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h2 class="card-title">{{ product.name }}</h2>
+                                        <p class="card-text">{{ product.description }}</p>
+                                        <p class="card-text">Price: Rs.{{ product.price }}</p>
+                                        <p class="card-text">Available: {{ product.quantity }}</p>
+                                </a><br>
+                                        {% if user.is_authenticated %}
+                                        <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="count">Quantity:</label>
+                                                <input type="number" class="form-control" id="count" name="count" min="1" max="{{ product.quantity }}" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                                        </form>
+                                        {% else %}
+                                        <p><a href="{% url 'login' %}" class="btn btn-secondary">Login</a> to add to cart</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                           
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach(card => {
+            const productName = card.querySelector('.card-title').textContent.toLowerCase();
+            const productDescription = card.querySelector('.card-text').textContent.toLowerCase();
+
+            if (productName.includes(searchTerm) || productDescription.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}

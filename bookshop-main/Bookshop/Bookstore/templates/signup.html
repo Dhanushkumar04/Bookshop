@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    input:invalid + .invalid-feedback {
+        display: block;
+    }
+    
+    .invalid-feedback {
+        display: none;
+        color: red;
+        margin-top: 5px;
+    }
+</style>    
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" pattern="[a-zA-Z0-9._%+-]+@gmail\.com$" title="Please enter a valid Gmail address ending with @gmail.com" required>
+            <div class="invalid-feedback">
+                Please enter a valid Gmail address ending with @gmail.com.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <div class="mb-3">
+            <label for="cpassword" class="form-label">Confirm Password:</label>
+            <input type="password" class="form-control" id="cpassword" name="cpassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+</div>
+<script>
+    document.getElementById('emailForm').addEventListener('submit', function(event) {
+        var emailInput = document.getElementById('email');
+        if (!emailInput.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        emailInput.classList.add('was-validated');
+    }, false);
+</script>
+{% endblock %}
